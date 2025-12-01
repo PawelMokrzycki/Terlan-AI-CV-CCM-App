@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card shadow-soft px-4 pt-5 pb-4 my-5 rounded-4" style="max-width:620px; margin:auto;">
+  <h2 class="mb-3 text-center">Kontakt</h2>
+  <form method="post" enctype="multipart/form-data">
+    <div class="mb-3">
+      <label for="name" class="form-label">Imię i nazwisko</label>
+      <input type="text" class="form-control rounded-3" id="name" name="name" required>
+    </div>
+    <div class="mb-3">
+      <label for="email" class="form-label">Adres e-mail</label>
+      <input type="email" class="form-control rounded-3" id="email" name="email" required>
+    </div>
+    <div class="mb-3">
+      <label for="topic" class="form-label">Temat wiadomości</label>
+      <select class="form-select rounded-3" id="topic" name="topic">
+        <option value="" selected>Wybierz temat...</option>
+        <option value="support">Wsparcie techniczne</option>
+        <option value="feedback">Sugestie/funkcje</option>
+        <option value="bug">Zgłoszenie błędu</option>
+        <option value="account">Problemy z kontem</option>
+        <option value="other">Inne</option>
+      </select>
+    </div>
+    <div class="mb-3">
+      <label for="message" class="form-label">Wiadomość</label>
+      <textarea class="form-control rounded-3" id="message" name="message" rows="5" required></textarea>
+    </div>
+    <div class="mb-3">
+      <label for="attachment" class="form-label">Załącz plik (opcjonalnie, np. screenshot, log)</label>
+      <input type="file" class="form-control rounded-3" id="attachment" name="attachment" accept=".png,.jpg,.jpeg,.pdf,.txt,.log,.zip">
+      <small class="text-muted">Maks. rozmiar pliku: 50 MB</small>
+    </div>
+    <button type="submit" class="btn btn-primary w-100 rounded-pill mt-2">Wyślij</button>
+  </form>
+  <hr class="my-4">
+  <div class="text-center text-muted fs-6">
+    W przypadku pilnych spraw możesz napisać także na e-mail: <a href="mailto:it@terlanai.pl">it@terlanai.pl</a><br><br>
+    Zgłoszenia realizujemy w dni robocze od 8:00 do 16:00.
+  </div>
+</div>
+{% endblock %}

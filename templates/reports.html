@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+  .reports-card {
+    border-radius: 28px!important;
+    box-shadow: 0 3px 16px -4px #22334718;
+    background: #fff;
+  }
+  .reports-kalendarz-btn {
+    border-radius: 12px; background: #20b883; color:#fff; font-weight:600; margin-right:6px; min-width:50px; min-height:45px; font-size:1.1em;
+    border: none;
+  }
+</style>
+
+<div class="container py-4" style="max-width:1250px;">
+  <h2 class="fw-bold mb-4" style="letter-spacing:1px;">Raporty i statystyki</h2>
+  {% if alert %}
+    <div class="reports-card border-0 py-2 px-4 mb-3 bg-danger bg-opacity-75 text-white" style="font-weight:500; font-size:1.07em;">
+      {{ alert }}
+    </div>
+  {% endif %}
+
+  <div class="row g-3 align-items-stretch mb-3">
+    <div class="col-12">
+      <form method="get" class="row g-2 align-items-end reports-card p-3 pb-2">
+        <div class="col-auto">
+          <label class="form-label mb-0 small">Od</label>
+          <input type="date" name="start" value="{{ daty['start'] }}" class="form-control form-control-sm">
+        </div>
+        <div class="col-auto">
+          <label class="form-label mb-0 small">Do</label>
+          <input type="date" name="end" value="{{ daty['end'] }}" class="form-control form-control-sm">
+        </div>
+        <div class="col-auto">
+          <label class="form-label mb-0 small">Użytkownik</label>
+          <select name="user" class="form-select form-select-sm">
+            <option value="">Wszyscy</option>
+            {% for u in all_users %}
+              <option value="{{ u }}" {% if filter_user == u %}selected{% endif %}>{{ u }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-auto">
+          <label class="form-label mb-0 small">Status</label>
+          <select name="status" class="form-select form-select-sm">
+            <option value="">Wszystkie</option>
+            {% for s in statusy %}
+              <option value="{{ s }}" {% if filter_status == s %}selected{% endif %}>{{ s }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-auto">
+          <label class="form-label mb-0 small">Szukaj</label>
+          <input type="text" name="q" value="{{ phrase }}" class="form-control form-control-sm" placeholder="Słowo kluczowe">
+        </div>
+        <div class="col-auto ms-auto">
+          <a href="{{ url_for('export_csv', start=daty['start'], end=daty['end'], user=filter_user, status=filter_status, q=phrase) }}" class="btn btn-outline-secondary rounded-pill btn-sm me-1">CSV</a>
+          <a href="{{ url_for('export_xlsx', start=daty['start'], end=daty['end'], user=filter_user, status=filter_status, q=phrase) }}" class="btn btn-outline-secondary rounded-pill btn-sm me-1">Excel</a>
+          <a href="{{ url_for('export_pdf', start=daty['start'], end=daty['end'], user=filter_user, status=filter_status, q=phrase) }}" class="btn btn-outline-secondary rounded-pill btn-sm">PDF</a>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="row g-3 mb-3 align-items-stretch">
+    <div class="col-lg-3">
+      <div class="reports-card p-3 h-100">
+        <div class="fw-semibold mb-2">TOP użytkownicy</div>
+        <ul class="list-group list-group-flush">
+          {% for user, cnt in top_users %}
+            <li class="list-group-item d-flex justify-content-between align-items-center py-1">
+              {{ user }} <span class="badge bg-primary ms-2">{{ cnt }}</span>
+            </li>
+          {% else %}
+            <li class="list-group-item text-muted">Brak danych do rankingu.</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    <div class="col-lg-5">
+      <div class="reports-card p-3 h-100">
+        <div class="fw-semibold mb-2">Podsumowanie analiz</div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item d-flex justify-content-between"><span>Liczba analiz</span><span>{{ podsumowanie['analiz'] }}</span></li>
+          <li class="list-group-item d-flex justify-content-between"><span>Zak. poprawnie</span><span>{{ podsumowanie['zakonczone'] }}</span></li>
+          <li class="list-group-item d-flex justify-content-between"><span>Błędów</span><span>{{ podsumowanie['bledy'] }}</span></li>
+          <li class="list-group-item d-flex justify-content-between"><span>Użytkownicy</span><span>{{ podsumowanie['userow'] }}</span></li>
+          <li class="list-group-item d-flex justify-content-between"><span>Skuteczność</span><span>{{ podsumowanie['efektywnosc'] }}%</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="reports-card p-3 h-100">
+        <div class="fw-semibold mb-2">Trend analiz w czasie</div>
+        <canvas id="lineChart" style="max-height:135px; width:100%;"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="reports-card p-2 px-4 mb-3">
+    <span class="fw-semibold text-danger">Ostatnie błędy</span>
+    <ul class="mb-0 mt-2" style="list-style: none; padding-left:0;">
+      {% for rec in rekordy if rec.status == 'error' %}
+      <li>
+        <span style="font-size:1.2em;">&#10060;</span>
+        <b>{{ rec.user }}</b>: {{ rec.akcja }} <span class="text-muted">{{ rec.data }}</span>
+      </li>
+      {% else %}
+      <li class="text-muted">Brak błędów w raporcie.</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <div class="reports-card p-3 mb-3">
+    <div class="fw-semibold mb-2">Kalendarz aktywności (przykład)</div>
+    <div class="d-flex gap-2 flex-wrap mb-2">
+      {% for day, val in heatmap %}
+        <button class="reports-kalendarz-btn" style="opacity:{{ 0.50 + val*0.18 }};">{{ day }}<br><span style="font-size:1.18em;">{{ val }}</span></button>
+      {% endfor %}
+    </div>
+    <div class="text-muted mt-1" style="font-size:.97em;">Im mocniejsze tło, tym więcej operacji tego dnia</div>
+  </div>
+
+  <div class="reports-card p-3 my-5">
+    <div class="fw-semibold mb-2">Pełna lista operacji ({{ rekordy|length }})</div>
+    <div class="table-responsive">
+      <table class="table align-middle table-hover">
+        <thead class="table-light">
+          <tr>
+            <th>Data</th>
+            <th>Użytkownik</th>
+            <th>Operacja</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for rec in rekordy %}
+          <tr>
+            <td>{{ rec.data }}</td>
+            <td>{{ rec.user }}</td>
+            <td>{{ rec.akcja }}</td>
+            <td>
+              {% if rec.status == "success" %}
+              <span class="badge bg-success">OK</span>
+              {% elif rec.status == "error" %}
+              <span class="badge bg-danger">Błąd</span>
+              {% else %}
+              <span class="badge bg-secondary">{{ rec.status }}</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="4" class="text-muted text-center">Brak wyników dla wybranego zakresu.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const dataPoints = JSON.parse('{{ trendy | tojson | safe }}');
+  const ctx = document.getElementById('lineChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: dataPoints.labels,
+      datasets: [{
+        label: 'Analizy',
+        data: dataPoints.values,
+        fill: true,
+        borderColor: '#2e9afe',
+        backgroundColor: 'rgba(46,154,254,0.10)',
+        tension: 0.25,
+        pointRadius: 4,
+        pointBackgroundColor: '#20b883'
+      }]
+    },
+    options: {
+      plugins: { legend: { display:false } },
+      scales: {
+        x: { ticks: { color:'#6c757d' }, },
+        y: { beginAtZero:true, ticks: { stepSize:1, color:'#6c757d' } }
+      }
+    }
+  });
+});
+</script>
+{% endblock %}

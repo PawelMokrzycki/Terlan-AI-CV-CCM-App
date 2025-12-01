@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card shadow-soft">
+  <div class="card-body">
+    <h2 class="mb-3">Wyślij film do analizy</h2>
+    <form method="post" enctype="multipart/form-data" class="mb-4">
+      <div class="input-group rounded-pill shadow-sm">
+        <input type="file" name="file" class="form-control rounded-start-pill py-2 px-4" required>
+        <button class="btn btn-terlan rounded-end-pill px-4" type="submit">Wyślij</button>
+      </div>
+    </form>
+    <h5 class="mb-3">Twoje pliki:</h5>
+    <ul class="list-group list-group-flush">
+      {% for file in files %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          {{ file }}
+          <a href="{{ url_for('uploaded_file', filename=file) }}" class="btn btn-outline-primary btn-sm rounded-pill" target="_blank">Odtwórz</a>
+        </li>
+      {% else %}
+        <li class="list-group-item text-muted">Brak plików do wyświetlenia.</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endblock %}

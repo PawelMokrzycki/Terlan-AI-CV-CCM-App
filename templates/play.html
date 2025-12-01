@@ -1,0 +1,8 @@
+<h2>Odtwarzanie filmu</h2>
+{% if filename %}
+  <video width="480" controls>
+    <source src="{{ url_for('static', filename='uploads/' ~ filename) }}" type="video/mp4">
+  </video>
+{% else %}
+  <p>Brak pliku do odtworzenia.</p>
+{% endif %}

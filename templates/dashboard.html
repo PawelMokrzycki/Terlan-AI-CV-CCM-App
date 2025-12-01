@@ -1,0 +1,249 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+  .dashboard-kafelek {
+    border-radius: 32px!important;
+    position: relative;
+    min-height: 125px;
+  }
+  .dashboard-marker {
+    width: 22px; height: 22px; border-radius: 7px;
+    position: absolute; left: 18px; top: 18px; z-index: 2;
+    box-shadow: 0 2px 8px -4px #35353511;
+  }
+  .marker-green {background: #20B855FF;}
+  .marker-blue {background: #2e9afe;}
+  .marker-red {background: #f56b63;}
+  .marker-yellow {background: #ffc247;}
+  .marker-grey {background: #dee2e6;}
+  .dashboard-card {
+    border-radius: 32px!important;
+    min-height: 230px;
+    max-height: 320px;
+    display: flex; flex-direction: column;
+    justify-content: flex-start;
+    box-shadow: 0 2px 18px -8px #22334718;
+  }
+  .dashboard-table-card {
+    border-radius: 32px!important;
+    min-height: 260px;
+    max-height: 320px;
+    overflow:auto;
+    box-shadow: 0 2px 17px -8px #22334718;
+  }
+  .dashboard-title {
+    letter-spacing:1px;
+    text-align: center;
+    margin-bottom:32px;
+  }
+  .dashboard-emoji {
+    font-size: 1.8em; position: absolute; left: 16px; top: 16px;
+    z-index:2; width: 30px; height: 30px; display: flex; align-items:center; justify-content:center;
+  }
+  .dashboard-pct-bar {
+    height:18px; background: #ececec; border-radius:11px;
+    overflow:hidden; margin-top: 8px; margin-bottom:2px;
+  }
+  .dashboard-pct-bar-inner {
+    background: #20b883; height:100%; border-radius:11px; font-weight:600; color:#fff; display:flex; align-items:center; justify-content:center;
+    font-size: .96em;
+  }
+</style>
+<div class="container py-4" style="max-width:1220px;">
+  <div class="row justify-content-center">
+    <div class="col-12">
+      <h2 class="fw-bold dashboard-title">Dashboard</h2>
+    </div>
+  </div>
+
+  <!-- GŁÓWNE 3 KAFELKI -->
+  <div class="row g-4 justify-content-center mb-2">
+    <div class="col-12 col-md-4">
+      <div class="card shadow dashboard-kafelek text-center p-4">
+        <div class="dashboard-marker marker-green"></div>
+        <div class="text-muted mb-1 mt-2">Wszystkich analiz wideo</div>
+        <div class="display-6 fw-bold text-success">{{ liczba_plikow }}</div>
+      </div>
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="card shadow dashboard-kafelek text-center p-4">
+        <div class="dashboard-marker marker-blue"></div>
+        <div class="text-muted mb-1 mt-2">Analiz zakończonych</div>
+        <div class="display-6 fw-bold" style="color:#2e9afe;">{{ liczba_analiz }}</div>
+      </div>
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="card shadow dashboard-kafelek text-center p-4">
+        <div class="dashboard-marker marker-red"></div>
+        <div class="text-muted mb-1 mt-2">Błędów analiz</div>
+        <div class="display-6 fw-bold text-danger">{{ liczba_bledow }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DODATKOWE 3 KAFELKI – pod spodem -->
+  <div class="row g-4 justify-content-center mb-1 mt-2">
+    <div class="col-12 col-sm-4">
+      <div class="card dashboard-kafelek text-center p-4" style="min-height: 100px;">
+        <span class="dashboard-emoji">🆕</span>
+        <div class="text-muted mb-1" style="margin-top:12px;">Nowe analizy</div>
+        <div>
+          <span class="fw-bold text-primary" style="font-size: 2.1em;">{{ analiz_dzis }}</span>
+          <span class="text-muted small ms-1">(dzisiaj)</span>
+        </div>
+        <div>
+          <span class="fw-bold" style="font-size: 1.02em; color: #18498b">{{ analiz_tydzien }}</span>
+          <span class="text-muted small ms-1">w tym tygodniu</span>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-4">
+      <div class="card dashboard-kafelek text-center p-4" style="min-height: 100px;">
+        <span class="dashboard-emoji">⏱️</span>
+        <div class="text-muted mb-1" style="margin-top:12px;">Średni czas analizy</div>
+        <div>
+          <span class="fw-bold" style="font-size:2.1em; color:#ffc247;">{{ avg_time or 24 }}s</span>
+        </div>
+        <div class="text-muted small">dla ostatnich 20 analiz</div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-4">
+      <div class="card dashboard-kafelek text-center p-4" style="min-height: 100px;">
+        <span class="dashboard-emoji">✅</span>
+        <div class="text-muted mb-1" style="margin-top:12px;">Analizy zakończone sukcesem</div>
+        <div class="dashboard-pct-bar">
+          <div class="dashboard-pct-bar-inner" style="width: {{ sukces_pct }}%;">
+            {{ sukces_pct }}%
+          </div>
+        </div>
+        <div class="text-muted small">z wszystkich analiz</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nowy układ dla „Postęp analiz” oraz „Ranking aktywności” -->
+  <div class="row g-3 mb-3">
+    <div class="col-lg-8">
+      <div class="card dashboard-card px-4 py-3 mb-3 h-100">
+        <div class="fw-semibold mb-3">Postęp analiz wg statusu</div>
+        <canvas id="barChart" style="height:220px;max-height:230px;"></canvas>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="card dashboard-card px-4 py-3 mb-3 h-100 d-flex flex-column justify-content-between" style="min-height:230px;">
+        <div>
+          <div class="fw-semibold mb-3">Ranking aktywności</div>
+          <ul class="list-group list-group-flush">
+            {% for user, cnt in top_users %}
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span>{{ user }}</span>
+                <span class="badge bg-primary ms-2">{{ cnt }}</span>
+              </li>
+            {% else %}
+              <li class="list-group-item text-muted">Brak danych do rankingu.</li>
+            {% endfor %}
+          </ul>
+        </div>
+        <div class="mt-4 fw-semibold mb-2">Podział typów analiz</div>
+        <canvas id="donutChart" style="height:105px;max-height:110px;"></canvas>
+      </div>
+    </div>
+    <div class="col-12">
+      <div class="card dashboard-table-card px-4 py-3">
+        <div class="fw-semibold mb-2">Aktywność użytkowników</div>
+        <div class="table-responsive" style="max-height:200px;overflow:auto;">
+          <table class="table align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>Użytkownik</th>
+                <th>Akcja</th>
+                <th>Data</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for osoba in aktywnosc %}
+              <tr>
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    {% if osoba.imie in ["Anna", "Ela"] %}
+                      <span style="font-size:2em;">👩</span>
+                    {% else %}
+                      <span style="font-size:2em;">👨</span>
+                    {% endif %}
+                    <span>{{ osoba.imie }}</span>
+                  </div>
+                </td>
+                <td>{{ osoba.akcja }}</td>
+                <td>{{ osoba.data }}</td>
+                <td>
+                  {% if osoba.status == "Aktywne" %}
+                  <span class="badge bg-success">Aktywne</span>
+                  {% elif osoba.status == "W toku" %}
+                  <span class="badge bg-warning text-dark">W toku</span>
+                  {% elif osoba.status == "Błąd" %}
+                  <span class="badge bg-danger">Błąd</span>
+                  {% else %}
+                  <span class="badge bg-secondary">{{ osoba.status }}</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% else %}
+              <tr>
+                <td colspan="4" class="text-center text-muted">Brak aktywności</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Bar chart (kolumnowy)
+  const barCtx = document.getElementById('barChart').getContext('2d');
+  new Chart(barCtx, {
+    type: 'bar',
+    data: {
+      labels: ['Aktywne', 'W toku', 'Błąd', 'Zakończone'],
+      datasets: [{
+        label: 'Analizy',
+        data: [8, 6, 2, 20],
+        backgroundColor: ['#20b883', '#ffc247', '#f56b63', '#2e9afe'],
+        borderRadius: 12
+      }]
+    },
+    options: {
+      plugins: { legend: { display: false } },
+      aspectRatio: 2.4,
+      maintainAspectRatio: false,
+      scales: { x: { grid: {display:false}}, y: {beginAtZero:true, ticks: {stepSize:5}} }
+    }
+  });
+
+  // Donut chart
+  const donutCtx = document.getElementById('donutChart').getContext('2d');
+  new Chart(donutCtx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Wideo', 'AI PDF', 'Konwersje', 'Inne'],
+      datasets: [{
+        data: [45, 30, 15, 10],
+        backgroundColor: ['#20b883', '#ffc247', '#2e9afe', '#ececec'],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      plugins: { legend: { position:'bottom', labels:{boxWidth:14, color:'#222'} } },
+      aspectRatio: 1.5,
+      maintainAspectRatio: false
+    }
+  });
+});
+</script>
+{% endblock %}

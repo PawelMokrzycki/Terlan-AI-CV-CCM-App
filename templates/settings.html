@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+  .settings-card {
+    max-width: 560px;
+    margin: 0 auto 28px auto;
+    border-radius: 2.2rem;
+    box-shadow: 0 3px 16px -4px #22334728;
+  }
+  .settings-btn {
+    background: #2860b5 !important; border: none!important; color: #fff!important;
+    border-radius: 18px!important; padding-left:2.4em;padding-right:2.4em;font-weight:600;
+  }
+  .settings-btn:hover, .settings-btn:focus { background: #2860b5 !important; color: #fff!important; }
+</style>
+<div class="container py-4" style="max-width:850px;">
+  <h2 class="fw-bold text-center mb-4">Ustawienia</h2>
+
+  <!-- Wygląd -->
+  <form method="post" enctype="multipart/form-data" class="mb-4 card settings-card p-4 shadow-soft">
+    <h5 class="fw-semibold mb-3">Wygląd i interfejs</h5>
+    <div class="row g-2 align-items-center mb-2">
+      <div class="col-6">
+        <label class="small mb-1">Motyw:</label>
+        <select class="form-select" name="theme">
+          <option value="light" {% if s.theme == 'light' %}selected{% endif %}>Jasny</option>
+          <option value="dark" {% if s.theme == 'dark' %}selected{% endif %}>Ciemny</option>
+        </select>
+      </div>
+      <div class="col-6">
+        <label class="small mb-1">Rozmiar czcionki:</label>
+        <select class="form-select" name="font_size">
+          <option value="normal" {% if s.font_size == 'normal' %}selected{% endif %}>Normalny</option>
+          <option value="large" {% if s.font_size == 'large' %}selected{% endif %}>Duży</option>
+        </select>
+      </div>
+    </div>
+    <div>
+      <input type="checkbox" name="tooltips" {% if s.tooltips %}checked{% endif %}> <span class="small ms-1">Pokazuj podpowiedzi narzędzi</span>
+    </div>
+    <div class="text-end">
+      <button type="submit" name="save_ui" class="btn settings-btn mt-3" style="min-width:170px;">Zapisz wygląd</button>
+    </div>
+  </form>
+
+  <!-- Konto -->
+  <form method="post" enctype="multipart/form-data" class="mb-4 card settings-card p-4 shadow-soft">
+    <h5 class="fw-semibold mb-3">Dane konta</h5>
+    <div class="mb-2">
+      <label class="small">Email:</label>
+      <input type="email" readonly class="form-control" value="user@email.com">
+    </div>
+    <div class="mb-2">
+      <label class="small">Nowe hasło:</label>
+      <input type="password" class="form-control" name="new_password">
+    </div>
+    <div class="mb-2">
+      <label class="small">Avatar:</label>
+      <input type="file" class="form-control" name="avatar">
+    </div>
+    <div class="text-end">
+      <button type="submit" name="save_acc" class="btn settings-btn">Zmień dane konta</button>
+    </div>
+  </form>
+
+  <!-- Powiadomienia/prywatność -->
+  <form method="post" class="mb-4 card settings-card p-4 shadow-soft">
+    <h5 class="fw-semibold mb-3">Prywatność i powiadomienia</h5>
+    <div class="form-check mb-2">
+      <input type="checkbox" class="form-check-input" name="keep_files" id="keep_files" {% if s.keep_files %}checked{% endif %}>
+      <label class="form-check-label small" for="keep_files">Przechowuj pliki po analizie</label>
+    </div>
+    <div class="mb-1">
+      <div class="form-check form-check-inline">
+        <input type="checkbox" class="form-check-input" name="mail_notify" id="mail_notify" {% if s.mail_notify %}checked{% endif %}>
+        <label class="form-check-label small" for="mail_notify">Powiadamiaj mailowo</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input type="checkbox" class="form-check-input" name="popup_notify" id="popup_notify" checked>
+        <label class="form-check-label small" for="popup_notify">Powiadomienia w panelu</label>
+      </div>
+    </div>
+    <div class="d-flex align-items-center gap-2 mb-3">
+      <input type="number" class="form-control" min="1" max="10" style="width:65px;" name="error_alert" value="{{ s.error_alert or 3 }}">
+      <span class="small">Alert, jeśli więcej niż X błędów pod rząd</span>
+    </div>
+    <div class="text-end">
+      <button type="submit" name="save_priv" class="btn settings-btn">Zapisz powiadomienia</button>
+    </div>
+  </form>
+
+  <!-- Eksperymentalne -->
+  <form method="post" class="mb-4 card settings-card p-4 shadow-soft">
+    <h5 class="fw-semibold mb-3">Eksperymentalne/zaawansowane</h5>
+    <div class="form-check mb-1">
+      <input type="checkbox" class="form-check-input" name="beta" id="beta" {% if s.beta %}checked{% endif %}>
+      <label class="form-check-label small" for="beta">Włącz funkcje beta</label>
+    </div>
+    <div class="form-check mb-3">
+      <input type="checkbox" class="form-check-input" name="tags" id="tags" {% if s.tags %}checked{% endif %}>
+      <label class="form-check-label small" for="tags">Pozwalaj tagować pliki</label>
+    </div>
+    <div class="text-end">
+      <button type="submit" name="save_adv" class="btn settings-btn">Zapisz eksperymentalne</button>
+    </div>
+  </form>
+
+  <!-- Język, daty, strefa -->
+  <form method="post" class="mb-4 card settings-card p-4 shadow-soft">
+    <h5 class="fw-semibold mb-3">Język i daty</h5>
+    <div class="row g-2">
+      <div class="col-4">
+        <label class="small">Język:</label>
+        <select class="form-select" name="lang">
+          <option value="pl" {% if s.lang == 'pl' %}selected{% endif %}>Polski</option>
+          <option value="en" {% if s.lang == 'en' %}selected{% endif %}>English</option>
+        </select>
+      </div>
+      <div class="col-4">
+        <label class="small">Strefa czasowa:</label>
+        <select class="form-select" name="tz">
+          <option value="Europe/Warsaw" {% if s.tz == 'Europe/Warsaw' %}selected{% endif %}>Warszawa</option>
+          <option value="UTC" {% if s.tz == 'UTC' %}selected{% endif %}>UTC</option>
+        </select>
+      </div>
+      <div class="col-4">
+        <label class="small">Daty:</label>
+        <select class="form-select" name="dates">
+          <option value="rel" {% if s.dates == 'rel' %}selected{% endif %}>Relatywne</option>
+          <option value="full" {% if s.dates == 'full' %}selected{% endif %}>Pełne</option>
+        </select>
+      </div>
+    </div>
+    <div class="text-end mt-3">
+      <button type="submit" name="save_time" class="btn settings-btn">Zapisz język i daty</button>
+    </div>
+  </form>
+
+  <!-- Historia zmian ustawień -->
+  <div class="card settings-card p-4 shadow-soft">
+    <h5 class="fw-semibold mb-3">Ostatnie operacje w ustawieniach</h5>
+    <ul class="mb-0" style="list-style: none; padding-left:0;">
+      <li><span class="text-success">[23-11 19:55]</span> - Zmieniony motyw na „ciemny”</li>
+      <li><span class="text-success">[23-11 19:54]</span> - Zmieniono rozmiar czcionki na „duży”</li>
+      <li><span class="text-primary">[23-11 19:46]</span> - Włączono powiadomienia mailowe</li>
+      <li><span class="text-danger">[23-11 19:42]</span> - Włączono funkcje beta</li>
+    </ul>
+    <div class="text-end mt-3">
+      <button class="btn btn-sm bg-secondary text-white rounded-pill">Wyczyść historię</button>
+    </div>
+  </div>
+
+  <!-- Sesje użytkownika -->
+  <div class="card settings-card p-4 shadow-soft mt-4">
+    <h5 class="fw-semibold mb-3">Aktywne sesje konta</h5>
+    <ul class="list-group list-group-flush mb-2">
+      <li class="list-group-item d-flex justify-content-between align-items-center ps-0">
+        Komputer (ten)
+        <span class="badge bg-success">Aktywna</span>
+      </li>
+      <li class="list-group-item d-flex justify-content-between align-items-center ps-0">
+        Smartfon
+        <button class="btn btn-sm btn-danger rounded-pill">Wyloguj</button>
+      </li>
+    </ul>
+    <div class="text-end">
+      <button class="btn btn-sm settings-btn">Wyloguj wszystko</button>
+    </div>
+  </div>
+</div>
+{% endblock %}

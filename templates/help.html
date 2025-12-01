@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card shadow-soft p-5 my-5 rounded-4" style="max-width:760px;margin:auto;">
+  <h2 class="mb-4 text-center">Pomoc / FAQ</h2>
+
+  <div class="accordion" id="faqAccordion">
+    <!-- Twoje oryginalne pytania -->
+    <div class="accordion-item rounded-3 mb-2">
+      <h2 class="accordion-header" id="faq1">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="false" aria-controls="collapse1">
+          Jakie pliki mogę przesłać do analizy?
+        </button>
+      </h2>
+      <div id="collapse1" class="accordion-collapse collapse" aria-labelledby="faq1" data-bs-parent="#faqAccordion">
+        <div class="accordion-body">
+          Możesz przesyłać pliki wideo w formatach MP4, AVI, WEBM oraz OGG.
+        </div>
+      </div>
+    </div>
+    <div class="accordion-item rounded-3 mb-2">
+      <h2 class="accordion-header" id="faq2">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2">
+          Czy pliki AVI są automatycznie konwertowane?
+        </button>
+      </h2>
+      <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="faq2" data-bs-parent="#faqAccordion">
+        <div class="accordion-body">
+          Tak, wszystkie pliki AVI są konwertowane do formatu MP4 zaraz po przesłaniu.
+        </div>
+      </div>
+    </div>
+    <div class="accordion-item rounded-3 mb-2">
+      <h2 class="accordion-header" id="faq3">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3" aria-expanded="false" aria-controls="collapse3">
+          Ile trwa analiza jednego wideo?
+        </button>
+      </h2>
+      <div id="collapse3" class="accordion-collapse collapse" aria-labelledby="faq3" data-bs-parent="#faqAccordion">
+        <div class="accordion-body">
+          Czas analizy zależy od długości pliku i liczby wykrywanych obiektów, zwykle wynosi od kilku sekund do kilku minut.
+        </div>
+      </div>
+    </div>
+    <div class="accordion-item rounded-3 mb-2">
+      <h2 class="accordion-header" id="faq4">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4" aria-expanded="false" aria-controls="collapse4">
+          Czy mogę przerwać analizę pliku?
+        </button>
+      </h2>
+      <div id="collapse4" class="accordion-collapse collapse" aria-labelledby="faq4" data-bs-parent="#faqAccordion">
+        <div class="accordion-body">
+          Tak, każda analiza może zostać zatrzymana przez wciśnięcie przycisku „Stop”.
+        </div>
+      </div>
+    </div>
+    <div class="accordion-item rounded-3 mb-2">
+      <h2 class="accordion-header" id="faq5">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse5" aria-expanded="false" aria-controls="collapse5">
+          Co oznaczają statusy przy plikach (np. oczekuje, przetwarzanie)?
+        </button>
+      </h2>
+      <div id="collapse5" class="accordion-collapse collapse" aria-labelledby="faq5" data-bs-parent="#faqAccordion">
+        <div class="accordion-body">
+          „Oczekuje” oznacza, że plik czeka na analizę. „Przetwarzanie” — analiza jest w toku, a po zakończeniu pojawi się opcja pobrania wyniku.
+        </div>
+      </div>
+    </div>
+    <div class="accordion-item rounded-3 mb-2">
+      <h2 class="accordion-header" id="faq6">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse6" aria-expanded="false" aria-controls="collapse6">
+          Gdzie znajdę wyniki analizy?
+        </button>
+      </h2>
+      <div id="collapse6" class="accordion-collapse collapse" aria-labelledby="faq6" data-bs-parent="#faqAccordion">
+        <div class="accordion-body">
+          Po zakończeniu procesu pojawi się przycisk „Pobierz wynik”, który umożliwia pobranie pliku z wynikami oraz podgląd wynikowego wideo.
+        </div>
+      </div>
+    </div>
+    <div class="accordion-item rounded-3 mb-2">
+      <h2 class="accordion-header" id="faq7">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse7" aria-expanded="false" aria-controls="collapse7">
+          Dlaczego nie mogę przesłać bardzo dużego pliku (np. powyżej 10 GB)?
+        </button>
+      </h2>
+      <div id="collapse7" class="accordion-collapse collapse" aria-labelledby="faq7" data-bs-parent="#faqAccordion">
+        <div class="accordion-body">
+          Aktualnie maksymalny rozmiar pojedynczego pliku do przesłania to 10 GB.
+        </div>
+      </div>
+    </div>
+    <div class="accordion-item rounded-3 mb-2">
+      <h2 class="accordion-header" id="faq8">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse8" aria-expanded="false" aria-controls="collapse8">
+          Czy platforma zapewnia ochronę moich plików?
+        </button>
+      </h2>
+      <div id="collapse8" class="accordion-collapse collapse" aria-labelledby="faq8" data-bs-parent="#faqAccordion">
+        <div class="accordion-body">
+          Wszystkie pliki są przechowywane na zabezpieczonym serwerze. Dostęp mają tylko autoryzowani użytkownicy.
+        </div>
+      </div>
+    </div>
+    <div class="accordion-item rounded-3 mb-2">
+      <h2 class="accordion-header" id="faq9">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse9" aria-expanded="false" aria-controls="collapse9">
+          Kogo mogę zapytać w razie problemów?
+        </button>
+      </h2>
+      <div id="collapse9" class="accordion-collapse collapse" aria-labelledby="faq9" data-bs-parent="#faqAccordion">
+        <div class="accordion-body">
+          W przypadku dodatkowych pytań lub problemów użyj formularza kontaktowego w zakładce "Kontakt".
+        </div>
+      </div>
+    </div>
+    <!-- NOWE DODATKOWE PYTANIA -->
+    <div class="accordion-item rounded-3 mb-2">
+      <h2 class="accordion-header" id="faq10">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse10" aria-expanded="false" aria-controls="collapse10">
+          Czy mogę przesłać kilka plików naraz?
+        </button>
+      </h2>
+      <div id="collapse10" class="accordion-collapse collapse" aria-labelledby="faq10" data-bs-parent="#faqAccordion">
+        <div class="accordion-body">
+          Tak, platforma obsługuje przesyłanie wielu plików jednocześnie – wystarczy wybrać więcej niż jeden plik podczas wgrywania.
+        </div>
+      </div>
+    </div>
+    <div class="accordion-item rounded-3 mb-2">
+      <h2 class="accordion-header" id="faq11">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse11" aria-expanded="false" aria-controls="collapse11">
+          Jak długo przechowywane są przesłane pliki?
+        </button>
+      </h2>
+      <div id="collapse11" class="accordion-collapse collapse" aria-labelledby="faq11" data-bs-parent="#faqAccordion">
+        <div class="accordion-body">
+          Pliki i wyniki analizy są przechowywane przez minimum 30 dni, po czym usuwane automatycznie.
+        </div>
+      </div>
+    </div>
+    <div class="accordion-item rounded-3 mb-2">
+      <h2 class="accordion-header" id="faq12">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse12" aria-expanded="false" aria-controls="collapse12">
+          Jakie obiekty potrafi wykryć system?
+        </button>
+      </h2>
+      <div id="collapse12" class="accordion-collapse collapse" aria-labelledby="faq12" data-bs-parent="#faqAccordion">
+        <div class="accordion-body">
+          System analizuje wnętrze rur i instalacji kanalizacyjnych. Może wykrywać pęknięcia, nieszczelności, wrastające korzenie, zatory, studzienki, połączenia, uszkodzenia mechaniczne oraz inne nieprawidłowości występujące w rurach.
+        </div>
+      </div>
+    </div>
+    <div class="accordion-item rounded-3 mb-2">
+      <h2 class="accordion-header" id="faq13">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse13" aria-expanded="false" aria-controls="collapse13">
+          Czy mogę wgrywać pliki także z telefonu?
+        </button>
+      </h2>
+      <div id="collapse13" class="accordion-collapse collapse" aria-labelledby="faq13" data-bs-parent="#faqAccordion">
+        <div class="accordion-body">
+          Tak, platforma działa również na urządzeniach mobilnych. Możesz przesłać pliki z telefonu lub tabletu.
+        </div>
+      </div>
+    </div>
+    <div class="accordion-item rounded-3 mb-2">
+      <h2 class="accordion-header" id="faq14">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse14" aria-expanded="false" aria-controls="collapse14">
+          Czy mogę załączyć plik z opisem problemu lub logiem w zgłoszeniu?
+        </button>
+      </h2>
+      <div id="collapse14" class="accordion-collapse collapse" aria-labelledby="faq14" data-bs-parent="#faqAccordion">
+        <div class="accordion-body">
+          Tak, w formularzu kontaktowym jest możliwość dodania załącznika (np. logów, screenshotów, dokumentów).
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-4">
+  <h2 class="mb-4">Chat AI – Pomoc, Tipsy, Dowcipy</h2>
+  <div id="chat-box" style="background:#e3e9f8;padding:18px 18px;border-radius:18px;min-height:220px;max-height:420px;overflow-y:auto;margin-bottom:18px;"></div>
+  <form id="chat-form" class="d-flex gap-2">
+    <input id="chat-input" type="text" class="form-control rounded-pill" placeholder="Zapytaj AI..." autocomplete="off">
+    <button class="btn btn-terlan rounded-pill px-4" type="submit">Wyślij</button>
+  </form>
+</div>
+<script>
+const chatBox = document.getElementById('chat-box');
+document.getElementById('chat-form').onsubmit = function(e){
+  e.preventDefault();
+  const inp = document.getElementById('chat-input');
+  const user = inp.value.trim();
+  if(!user) return;
+  chatBox.innerHTML += `<div class="mb-2 fw-semibold text-dark">Ty: ${user}</div>`;
+  inp.value = '';
+  fetch('/chat_api?msg='+encodeURIComponent(user))
+    .then(r=>r.json())
+    .then(data=>{
+      chatBox.innerHTML += `<div class="mb-3 text-primary">AI: ${data.reply}</div>`;
+      chatBox.scrollTop = chatBox.scrollHeight;
+    });
+};
+</script>
+{% endblock %}

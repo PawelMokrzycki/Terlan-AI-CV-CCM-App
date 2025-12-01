@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-center">
+  <div class="card shadow-soft rounded-4 px-4 pt-4 pb-1" style="width:100%; max-width: 650px; margin-top:48px; margin-bottom: 0; background: #fff;">
+    <div class="card-body p-0">
+      <h2 class="mb-3">Historia plików</h2>
+      <ul class="list-group list-group-flush">
+        {% for file in files %}
+          <li class="list-group-item d-flex flex-column flex-md-row justify-content-between align-items-center rounded-3 mb-2 shadow-sm" style="background:#fafdff; padding: 0.8rem 1rem;">
+            <div>
+              <span class="fw-semibold">{{ file.nazwa }}</span><br>
+              <small class="text-muted">
+                Dodano: {{ file.data_dodania }} |
+                Analiza: {{ file.data_analizy or '-' }} |
+                <span style="color:#4476c7;">Użytkownik: {{ file.uzytkownik or 'nieznany' }}</span>
+              </small>
+            </div>
+            <span class="mt-2 mt-md-0">
+              <span class="badge bg-secondary ms-2">{{ file.status }}</span>
+            </span>
+          </li>
+        {% else %}
+          <li class="list-group-item text-muted rounded-3" style="padding: 1rem;">Brak historii.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}

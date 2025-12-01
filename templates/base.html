@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}TerlanAI{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  {% block head %}{% endblock %}
+  <style>
+    body { background: #f2f6fc; }
+    .sidebar {
+      min-width: 280px; max-width: 300px; height: 100vh;
+      background: #234488; color: #fff;
+      position: fixed; top: 0; left: 0; z-index: 1030;
+      padding: 20px 0 0 0;
+      display: flex; flex-direction: column; align-items: stretch;
+    }
+    .sidebar-logo { display: flex; align-items: center; justify-content: center; margin-bottom: 10px; margin-top: 6px;}
+    .sidebar-logo a { display: block; }
+    .sidebar-logo img {
+      width: 220px; max-width: 98%; background: #fff;
+      border-radius: 32px; padding: 22px 18px;
+      box-shadow: 0 8px 36px -18px #22334744;
+    }
+    .sidebar-logo-hr {
+      border: none; border-top: 3px solid #cbefff;
+      margin: 10px 12px 16px 12px;
+      width: calc(100% - 24px);
+      box-shadow: 0 1px 8px -3px #23448855;
+    }
+    .sidebar-nav { margin-bottom: 16px; padding-left: 0;}
+    .sidebar .nav-link { color: #fff; font-weight: 600; font-size: 1.08em; border-radius: 14px; padding: 10px 28px; margin-bottom: 2px; transition: background .13s;}
+    .sidebar .nav-link.active, .sidebar .nav-link:focus, .sidebar .nav-link:hover { color: #234488; background: #f2f6fc;}
+    .main-content { margin-left: 300px; padding: 26px 28px 0 28px; min-height: 100vh; transition: padding 0.1s; }
+    .sidebar-footer { margin-top: auto; margin-bottom: 12px; text-align: center; font-size: .93em; color: #cbefff88; padding-top: 14px; }
+    .sidebar-toggler { display: none; }
+    .main-content .card { box-shadow: 0 2px 12px -4px #23448822; transition: box-shadow 0.18s; }
+    .main-content .card:hover, .main-content .card:focus { box-shadow: 0 6px 24px -8px #23448855; z-index: 3;}
+    /* Chatbot i logowanie/rejestracja */
+    #chatbot-btn {
+      position:fixed; right:29px; bottom:38px; z-index:5800; background:#fff; color:#0ca375; border:2px solid #0ca375; border-radius:38px; font-weight:700; font-size:1.1em; padding:13px 28px;
+      box-shadow: 0 3px 36px -13px #22334744;
+      cursor:pointer; transition:background .18s, color .14s, border .16s;
+    }
+    #chatbot-btn:hover, #chatbot-btn:focus { background:#0ca375; color:#fff; border-color:#0ca375;}
+    #chatbot-popup { display:none; position:fixed; right:18px; bottom:88px; width:350px; background:#fff; border-radius:22px; box-shadow:0 8px 32px #23448822; z-index:5900; }
+    .login-register { position:absolute; right:38px; top:22px; z-index:999; }
+    .login-register .btn { margin-left:8px;}
+    @media (max-width:990px) {
+      .main-content { margin-left:0; padding:35px 10px 0 10px; }
+      .login-register { position:static; right:auto; top:auto; margin:12px 0 3px 0; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar desktop -->
+  <div class="sidebar d-none d-lg-flex flex-column">
+    <div class="sidebar-logo">
+      <a href="/dashboard" tabindex="0">
+        <img src="/static/terlanai.png" alt="TerlanAI" />
+      </a>
+    </div>
+    <hr class="sidebar-logo-hr">
+    <nav class="sidebar-nav flex-column flex-lg-column d-flex">
+      <a class="nav-link {% if 'dashboard' in request.path %}active{% endif %}" href="/dashboard">Dashboard</a>
+      <a class="nav-link {% if 'files' in request.path %}active{% endif %}" href="/files">Pliki</a>
+      <a class="nav-link {% if 'analyze' in request.path %}active{% endif %}" href="/analyze">Analizy AI</a>
+      <a class="nav-link {% if 'tools' in request.path %}active{% endif %}" href="/tools">Narzędzia AI</a>
+      <a class="nav-link {% if 'reports' in request.path %}active{% endif %}" href="/reports">Raporty</a>
+      <a class="nav-link {% if 'map' in request.path %}active{% endif %}" href="/map">Mapy</a>
+      <a class="nav-link {% if 'history' in request.path %}active{% endif %}" href="/history">Historia</a>
+      <a class="nav-link {% if 'settings' in request.path %}active{% endif %}" href="/settings">Ustawienia</a>
+      <a class="nav-link {% if 'help' in request.path %}active{% endif %}" href="/help">Pomoc / FAQ</a>
+      <a class="nav-link {% if 'contact' in request.path %}active{% endif %}" href="/contact">Kontakt</a>
+    </nav>
+    <div class="sidebar-footer">
+      © Terlan 2025<br>v1.01
+    </div>
+  </div>
+  <!-- Sidebar mobile/offcanvas -->
+  <div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="offcanvasSidebar" aria-labelledby="offcanvasSidebarLabel">
+    <div class="offcanvas-header pb-0">
+      <div class="sidebar-logo-offcanvas w-100 d-flex justify-content-between align-items-center">
+        <a href="/dashboard" tabindex="0">
+          <img src="/static/terlanai.png" alt="TerlanAI" />
+        </a>
+        <button type="button" class="btn-close text-reset ms-2" data-bs-dismiss="offcanvas" aria-label="Zamknij"></button>
+      </div>
+    </div>
+    <div class="offcanvas-body d-flex flex-column align-items-start ps-2">
+      <nav class="sidebar-nav flex-column d-flex mb-2 w-100">
+        <a class="nav-link {% if 'dashboard' in request.path %}active{% endif %}" href="/dashboard">Dashboard</a>
+        <a class="nav-link {% if 'files' in request.path %}active{% endif %}" href="/files">Pliki</a>
+        <a class="nav-link {% if 'analyze' in request.path %}active{% endif %}" href="/analyze">Analizy AI</a>
+        <a class="nav-link {% if 'tools' in request.path %}active{% endif %}" href="/tools">Narzędzia AI</a>
+        <a class="nav-link {% if 'reports' in request.path %}active{% endif %}" href="/reports">Raporty</a>
+        <a class="nav-link {% if 'map' in request.path %}active{% endif %}" href="/map">Mapy</a>
+        <a class="nav-link {% if 'history' in request.path %}active{% endif %}" href="/history">Historia</a>
+        <a class="nav-link {% if 'settings' in request.path %}active{% endif %}" href="/settings">Ustawienia</a>
+        <a class="nav-link {% if 'help' in request.path %}active{% endif %}" href="/help">Pomoc / FAQ</a>
+        <a class="nav-link {% if 'contact' in request.path %}active{% endif %}" href="/contact">Kontakt</a>
+      </nav>
+      <div class="mb-3 w-100 text-center">
+        <a href="/login" class="btn btn-outline-primary btn-sm me-1">Logowanie</a>
+        <a href="/register" class="btn btn-primary btn-sm">Rejestracja</a>
+      </div>
+      <div class="sidebar-footer mb-2 text-center w-100">
+        © Twój stary <3<br>v1.01
+      </div>
+    </div>
+  </div>
+  <div class="login-register d-none d-lg-block">
+    <a href="/login" class="btn btn-outline-primary">Logowanie</a>
+    <a href="/register" class="btn btn-primary">Rejestracja</a>
+  </div>
+  <div class="main-content">
+    {% block content %}{% endblock %}
+  </div>
+  <button id="chatbot-btn"><span>🤖</span> Chat AI</button>
+  <div id="chatbot-popup">
+    <div style="padding:18px; min-height:130px;">
+      <div id="chat-bubble" style="margin-bottom:12px; background:#e0f4ef; border-radius:12px; padding:12px; color:#207c52;">Zapytaj AI o projekt, YOLO albo matematykę!</div>
+      <form id="chat-form">
+        <input type="text" id="chat-message" class="form-control mb-2" style="width:97%;" placeholder="Twoja wiadomość...">
+        <button type="submit" class="btn btn-outline-primary float-end">Wyślij</button>
+      </form>
+    </div>
+  </div>
+  <script>
+    document.getElementById('chatbot-btn').onclick = function() {
+      var popup = document.getElementById('chatbot-popup');
+      popup.style.display = (popup.style.display=="block"||popup.style.display=="") ? "none" : "block";
+    };
+    document.getElementById('chat-form').onsubmit = function(e){
+      e.preventDefault();
+      var msg = document.getElementById('chat-message').value;
+      fetch('/chat_api?msg='+encodeURIComponent(msg)).then(r=>r.json()).then(resp=>{
+        document.getElementById('chat-bubble').innerText = resp.reply;
+        document.getElementById('chat-message').value = "";
+      });
+    };
+  </script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "theme": "light",
+  "font_size": "normal",
+  "tooltips": false,
+  "mail_notify": false,
+  "keep_files": true,
+  "error_alert": 3,
+  "beta": false,
+  "tags": true,
+  "lang": "pl",
+  "tz": "Europe/Warsaw",
+  "dates": "rel"
+}
