@@ -1,7 +1,7 @@
 # Terlan AI - YOLO App
 
-This is a **prototype web application** built with **Flask**, created as my **first Flask project** during a **hackathon**.  
-The main goal was to experiment with **AI-powered video analysis** and web development in a short timeframe.
+This is a **prototype web application** built with **Flask**, created as my **first Flask project** during a longterm **hackathon** for PCCS (Poznań Supercomputing and Networking Center.  
+The main goal was to experiment with **AI-powered video analysis** and web development.
 
 ---
 
