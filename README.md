@@ -1,10 +1,34 @@
-# Terlan AI - CV/CCM App
+# Terlan AI - YOLO App
 
-Terlan AI - CV/CCM App is a Flask-based web application designed to analyze and process data related to CV (Curriculum Vitae) and CCM. The app provides interactive features, generates results, and visualizes data to help users better understand their inputs.  
+This is a **prototype web application** built with **Flask**, created as my **first Flask project** during a **hackathon**.  
+The main goal was to experiment with **AI-powered video analysis** and web development in a short timeframe.
 
-Built with Python and Flask, this project demonstrates web development, data handling, and result visualization in a lightweight and user-friendly interface.
+---
 
+## Features
 
+- **Video Uploads:** Supports common formats (MP4, AVI, WebM, OGG). AVI files are automatically converted to MP4.  
+- **AI Video Analysis:** Uses a YOLO object detection model with **real-time progress tracking**.  
+- **Results & Reports:** View analysis results in a dedicated folder and export reports in CSV, XLSX, or PDF.  
+- **Dashboard:** Track statistics, recent activity, and a simple map snapshot.  
+- **User Settings:** Basic management and reporting features.
+
+---
+
+## Purpose
+
+This project is a **hackathon prototype**, meant as a **learning experience**, demonstrating:  
+
+- Integration of AI models with a web interface  
+- File uploads and background processing  
+- Real-time tracking for long-running tasks  
+- Reporting and basic user management  
+
+Even though it’s a prototype, it shows the potential of combining **computer vision** and **web applications** and serves as a foundation for future improvements.
+
+---
+
+## Screenshots
 <img width="2536" height="1263" alt="image" src="https://github.com/user-attachments/assets/61513756-8cd0-4b3a-9759-f2d8ceaf9f4e" />
 <img width="2546" height="673" alt="image" src="https://github.com/user-attachments/assets/c1f8729d-c7a9-407c-88f3-611edc5a9469" />
 <img width="2531" height="1079" alt="image" src="https://github.com/user-attachments/assets/a974ca1e-7a50-4c88-9b4c-884c7a2939d1" />
