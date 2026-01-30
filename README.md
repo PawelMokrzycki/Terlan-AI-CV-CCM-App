@@ -1,4 +1,9 @@
-My first hackathon app :)
+# Terlan AI - CV/CCM App
+
+Terlan AI - CV/CCM App is a Flask-based web application designed to analyze and process data related to CV (Curriculum Vitae) and CCM. The app provides interactive features, generates results, and visualizes data to help users better understand their inputs.  
+
+Built with Python and Flask, this project demonstrates web development, data handling, and result visualization in a lightweight and user-friendly interface.
+
 
 <img width="2536" height="1263" alt="image" src="https://github.com/user-attachments/assets/61513756-8cd0-4b3a-9759-f2d8ceaf9f4e" />
 <img width="2546" height="673" alt="image" src="https://github.com/user-attachments/assets/c1f8729d-c7a9-407c-88f3-611edc5a9469" />
